@@ -166,6 +166,16 @@ def get_question_answer_pairs(from_date, to_date, tags, stackapps_token, stackap
     """
     Fetch question answer pairs from the Stack Exchange API using the above `extract_questions` `extract_answers_by_answer_id` functions
     """
+    
+    # Validation
+    fd_year, fd_month, fd_day = map(int, from_date.strip().split("-"))
+    td_year, td_month, td_day = map(int, to_date.strip().split("-"))
+          
+    if fd_year > td_year or \
+          (fd_year == td_year and fd_month > td_month) or \
+          (fd_year == td_year and fd_month == td_month and fd_day > td_day):
+        raise ValueError("from_date < to date")
+          
     qa_pairs = {
         "question_id":[],
         "creation_date":[],
