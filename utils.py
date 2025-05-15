@@ -43,7 +43,7 @@ def update_huggingface_dataset(new_data_df: pd.DataFrame, username:str, dataset_
         print(f"ℹ️ Could not load existing dataset. Starting fresh.")
         updated_df = new_data_df
 
-    if pd.Index(existing_df["question_id"]).intersection(pd.Index(new_data_df["question_id"])):
+    if pd.Index(existing_df["question_id"]).intersection(pd.Index(new_data_df["question_id"])).tolist():
         raise ValueError("Duplicate rows are not allowed. Please reconsider the date range.")
 
     # Convert final DataFrame to Hugging Face Dataset and push to hub
