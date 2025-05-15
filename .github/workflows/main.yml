@@ -1,0 +1,33 @@
+name: Stackoverflow Python Q&A Extraction
+
+on:
+  schedule:
+    - cron: '59 23 * * *'  # Every day at 11:59 PM UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set .env file
+        run: |
+          FROM_DATE=$(date -d "yesterday" +%Y-%m-%d)
+          TO_DATE=$(date +%Y-%m-%d)
+
+          echo "STACKAPPS_TOKEN=${{ secrets.STACKAPPS_TOKEN }}" > .env
+          echo "STACKAPPS_KEY=${{ secrets.STACKAPPS_KEY }}" >> .env
+          echo "TOKEN=${{ secrets.TOKEN }}" >> .env
+          echo "FROM_DATE=$FROM_DATE" >> .env
+          echo "TO_DATE=$TO_DATE" >> .env
+
+      - name: Display .env
+        run: cat .env
+
+      - name: Run main.py
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+          python main.py
