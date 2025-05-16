@@ -16,7 +16,7 @@ stackapps_key = config("STACKAPPS_KEY")
 login(token=config("TOKEN"))
 
 date_ranges = [
-    ('2025-05-14', '2025-05-15')
+    (config("FROM_DATE"), config("TO_DATE"))
 ]
 
 def fetch_data(from_date, to_date):
