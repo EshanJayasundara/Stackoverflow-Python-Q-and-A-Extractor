@@ -13,6 +13,7 @@ jobs:
 
       - name: Set .env file
         run: |
+          export TZ=Asia/Colombo
           FROM_DATE=$(date -d "yesterday" +%Y-%m-%d)
           TO_DATE=$(date +%Y-%m-%d)
 
