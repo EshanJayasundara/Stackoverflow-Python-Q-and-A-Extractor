@@ -1,9 +1,11 @@
 name: Stackoverflow Python Q&A Extraction
 
 on:
+  push:
+    branches: [main]
   schedule:
-    - cron: '59 23 * * *'  # Every day at 11:59 PM UTC
-
+    - cron: '37 18 * * *'  # Every day at 12:07 AM Asia/Colombo time (which is 6:37 PM UTC)
+    
 jobs:
   build:
     runs-on: ubuntu-latest
