@@ -33,6 +33,16 @@ def update_huggingface_dataset(new_data_df: pd.DataFrame, username:str, dataset_
         existing_dataset = load_dataset(f"{username}/{dataset_name}", split=split)
         existing_df = pd.DataFrame(existing_dataset)
 
+        duplicates = pd.Index(existing_df["question_id"]).intersection(pd.Index(new_data_df["question_id"])).tolist()
+        duplicates_count = len(duplicates)
+        
+        if duplicates_count == new_data_df.shape[0]:
+            print("Skipping... Duplicate rows are not allowed. Please reconsider the date range.")
+            return
+        elif duplicates_count < new_data_df.shape[0]:
+            print("Some duplicates detected. Droping them before pushing to hub.")
+            new_data_df = new_data_df[~new_data_df["question_id"].isin(duplicates)]
+
         if existing_df.empty:
             print("⚠️ Existing dataset is empty. Creating a new dataset.")
             updated_df = new_data_df
@@ -42,9 +52,6 @@ def update_huggingface_dataset(new_data_df: pd.DataFrame, username:str, dataset_
         # print(f"ℹ️ Could not load existing dataset. Starting fresh. (Error: {e})")
         print(f"ℹ️ Could not load existing dataset. Starting fresh.")
         updated_df = new_data_df
-
-    if pd.Index(existing_df["question_id"]).intersection(pd.Index(new_data_df["question_id"])).tolist():
-        raise ValueError("Duplicate rows are not allowed. Please reconsider the date range.")
 
     # Convert final DataFrame to Hugging Face Dataset and push to hub
     if not updated_df.empty:
